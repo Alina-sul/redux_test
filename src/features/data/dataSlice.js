@@ -1,35 +1,51 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createSlice,createSelector,PayloadAction,createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 const initialState = {
-    data: [],
+    pokemon: [],
     status: 'idle',
+    error: ""
 };
 
-export const fetchData = createAsyncThunk(
-    'data/fetchData',
-    async () => {
-        const response = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=100&offset=200`);
-        return response.data;
+export const fetchPokemon = createAsyncThunk(
+    'pokemon/fetchPokemon',
+    async (_, thunkAPI) => {
+        try {
+            const response = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=100&offset=200`);
+            return await response.json();
+
+        } catch(error) {
+            return thunkAPI.rejectWithValue({ error: error.message });
+        }
      },
 );
 
-export const dataSlice = createSlice({
+const dataSlice = createSlice({
     name: 'data',
     initialState,
-    reducers: {
-        extraReducers: (builder) => {
-            builder
-                .addCase(fetchData.pending, (state) => {
-                    state.status = 'loading';
-                })
-                .addCase(fetchData.fulfilled, (state, action) => {
-                    state.status = 'idle';
-                    state.data = action.payload;
-                });
-        },
+    reducers: {},
+    extraReducers: (builder) => {
+        builder.addCase(fetchPokemon.pending, (state) => {
+            state.pokemon = [];
+            state.status = "loading";
+        });
+        builder.addCase(
+            fetchPokemon.fulfilled, (state, { payload }) => {
+                state.pokemon = payload;
+                state.status = "loaded";
+            });
+        builder.addCase(
+            fetchPokemon.rejected,(state, action) => {
+                state.status = "error";
+                state.error = action.error.message;
+            });
     }
 });
 
-export default dataSlice.reducer;
+export const selectPokemon = createSelector((state) => ({
+    pokemon: state.pokemon,
+    status: state.status,
+}), (state) => state);
 
+
+export default dataSlice;

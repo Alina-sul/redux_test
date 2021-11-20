@@ -1,10 +1,11 @@
 import './App.css';
+import Grid from "./components/grid/Grid";
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-test
+            <Grid/>
       </header>
     </div>
   );
