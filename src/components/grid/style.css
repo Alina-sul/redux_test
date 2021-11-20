@@ -1,0 +1,12 @@
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.grid .pCard {
+  flex-grow: 1;
+  width: 20%;
+  height: 100px;
+  margin: 3%;
+}
+

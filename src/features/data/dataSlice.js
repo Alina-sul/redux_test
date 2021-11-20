@@ -1,9 +1,8 @@
-import { createSlice,createSelector,PayloadAction,createAsyncThunk } from '@reduxjs/toolkit';
+import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import axios from 'axios';
-import {useMemo} from "react";
 
 const initialState = {
-    pokemon: [],
+    pokemonList: [],
     status: 'idle',
     error: ""
 };
@@ -11,14 +10,36 @@ const initialState = {
 export const fetchPokemon = createAsyncThunk(
     'pokemon/fetchPokemon',
     async (_, thunkAPI) => {
-        try {
-            const response = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=100&offset=200`);
-            console.log( 'test axios',await response.data.results);
-            return await response.data.results;
 
-        } catch(error) {
-            return thunkAPI.rejectWithValue({ error: error.message });
-        }
+        return axios.get(`https://pokeapi.co/api/v2/pokemon?limit=100&offset=0`)//get pokemon list
+            .then((res) => {
+                const promises =  res.data.results.map(obj => {
+                    return axios.get(`${obj.url}`)// get pokemon object
+                        .then((res) => {
+                            return {
+                                id: res.data.id,
+                                name: res.data.name,
+                                image: res.data.sprites.front_default,
+                                base_experience: res.data.base_experience,
+                                types: res.data.types
+                            };
+                        })
+                        .catch((err) => {
+                            return thunkAPI.rejectWithValue({ error: err.message });
+                        }) ;
+                });
+                return Promise.all(promises);
+        }).catch((err) => {
+            return thunkAPI.rejectWithValue({ error: err.message });
+        });
+        // try {
+        //     const response = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=100&offset=0`);
+        //
+        //     return response.data.results;
+        //
+        // } catch(error) {
+        //     return thunkAPI.rejectWithValue({ error: error.message });
+        // }
      },
 );
 
@@ -29,14 +50,14 @@ const dataSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(fetchPokemon.pending, (state) => {
-            state.pokemon = [];
+            state.pokemonList = [];
             state.status = "loading";
         });
         builder.addCase(
             fetchPokemon.fulfilled, (state, { payload }) => {
 
-                state.pokemon = payload;
-                console.log('state.pokemon',state.pokemon);
+                state.pokemonList = payload;
+                console.log('state.pokemon',state.pokemonList);
 
                 state.status = "loaded";
             });
@@ -48,6 +69,8 @@ const dataSlice = createSlice({
     }
 });
 
+
+/*Not working properly
 export const selectPokemon = createSelector((state) => {
     console.log('state in createSelector',state)
     return {
@@ -55,7 +78,7 @@ export const selectPokemon = createSelector((state) => {
         status: state.status,
     }
 }, (state) => state);
-
+*/
 
 
 export default dataSlice;

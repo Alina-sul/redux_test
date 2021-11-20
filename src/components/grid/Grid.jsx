@@ -4,32 +4,33 @@ import {
     fetchPokemon,
     selectPokemon
 } from "../../features/data/dataSlice";
+import PokemonCard from '../card/PokemonCard';
+import './style.css';
 
 function Grid() {
-    const {pokemon, status} = useSelector((state) => {
+    const {pokemonList, status} = useSelector((state) => {
         return {
-            pokemon: state.dataSlice.pokemon,
+            pokemonList: state.dataSlice.pokemonList,
             status: state.dataSlice.status,
         }
 
     });
     const dispatch = useDispatch();
 
-    console.log('pokemon in component',pokemon);
-    console.log('status in component',status);
-
     useEffect(() => {
         dispatch(fetchPokemon());
-        console.log('pokemon in useEffect',pokemon);
+        console.log('pokemon in useEffect',pokemonList);
 
     },[]);
 
     return (
-        <div>
+        <div className={'grid'}>
             {
-                Array.isArray(pokemon) && pokemon.map( (pok) => {
+                Array.isArray(pokemonList)   && pokemonList.map( x => {
                     return (
-                        <div key={pok.name}>{pok.name}</div>
+                        <PokemonCard key={`card - ${x.name}`} pokemon={{
+                            name: x.name
+                        }}/>
                     )
                 })
             }
