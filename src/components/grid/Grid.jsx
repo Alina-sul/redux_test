@@ -6,19 +6,33 @@ import {
 } from "../../features/data/dataSlice";
 
 function Grid() {
-    const {pokemon, status} = useSelector(selectPokemon);
+    const {pokemon, status} = useSelector((state) => {
+        return {
+            pokemon: state.dataSlice.pokemon,
+            status: state.dataSlice.status,
+        }
+
+    });
     const dispatch = useDispatch();
 
-    console.log(status);
+    console.log('pokemon in component',pokemon);
+    console.log('status in component',status);
 
     useEffect(() => {
-        dispatch(fetchPokemon())
-        console.log(pokemon, status)
-    },[dispatch,pokemon,status]);
+        dispatch(fetchPokemon());
+        console.log('pokemon in useEffect',pokemon);
+
+    },[]);
 
     return (
         <div>
-            test
+            {
+                Array.isArray(pokemon) && pokemon.map( (pok) => {
+                    return (
+                        <div key={pok.name}>{pok.name}</div>
+                    )
+                })
+            }
         </div>
     );
 }
