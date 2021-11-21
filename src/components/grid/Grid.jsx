@@ -28,9 +28,7 @@ function Grid() {
             {
                 Array.isArray(pokemonList)   && pokemonList.map( x => {
                     return (
-                        <PokemonCard key={`card - ${x.name}`} pokemon={{
-                            name: x.name
-                        }}/>
+                        <PokemonCard key={`card - ${x.name}`} pokemon={x}/>
                     )
                 })
             }

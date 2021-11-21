@@ -11,7 +11,7 @@ export const fetchPokemon = createAsyncThunk(
     'pokemon/fetchPokemon',
     async (_, thunkAPI) => {
 
-        return axios.get(`https://pokeapi.co/api/v2/pokemon?limit=100&offset=0`)//get pokemon list
+        return axios.get(`https://pokeapi.co/api/v2/pokemon?limit=99&offset=0`)//get pokemon list
             .then((res) => {
                 const promises =  res.data.results.map(obj => {
                     return axios.get(`${obj.url}`)// get pokemon object
