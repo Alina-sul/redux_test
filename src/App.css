@@ -28,11 +28,13 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+#standard-textarea {
+  color: white;
+}
+#standard-textarea-label {
+  color: white;
+}
+
+.css-5xn5lu-MuiInputBase-root-MuiInput-root::before {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.42)!important;
 }

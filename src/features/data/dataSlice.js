@@ -1,4 +1,4 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import {createAsyncThunk, createSelector, createSlice} from '@reduxjs/toolkit';
 import axios from 'axios';
 
 const initialState = {
@@ -32,14 +32,7 @@ export const fetchPokemon = createAsyncThunk(
         }).catch((err) => {
             return thunkAPI.rejectWithValue({ error: err.message });
         });
-        // try {
-        //     const response = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=100&offset=0`);
-        //
-        //     return response.data.results;
-        //
-        // } catch(error) {
-        //     return thunkAPI.rejectWithValue({ error: error.message });
-        // }
+
      },
 );
 
@@ -70,18 +63,16 @@ const dataSlice = createSlice({
 });
 
 
-/*Not working properly
-export const selectPokemon = createSelector((state) => {
-    console.log('state in createSelector',state)
-    return {
-        pokemon: state.pokemon,
-        status: state.status,
-    }
-}, (state) => state);
-*/
+export const selectPokemon = createSelector((state) =>
+    ({
+        pokemonList: state.dataSlice.pokemonList,
+        status: state.dataSlice.status,
+
+}), (state) => state);
 
 
-export default dataSlice;
+
+export default dataSlice.reducer;
 
 
 
