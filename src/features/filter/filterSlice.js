@@ -19,8 +19,8 @@ export const { filterText } = filterSlice.actions;
 
 export const selectFilter = createSelector((state) =>
     ({
-        filterByType: state.filterByType,
-        value: state.value,
+        filterByType: state.filterSlice.filterByType,
+        value: state.filterSlice.value,
     }), (state) => state);
 
 
